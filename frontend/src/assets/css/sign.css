@@ -1,0 +1,21 @@
+.loginContainer {
+    background: #e91e63;
+    height: calc(100vh - 55px);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+}
+
+.main-bg {
+    background: #e91e63 !important;
+}
+
+input:focus, button:focus {
+    border: 1px solid #e91e63 !important;
+    box-shadow: none !important;
+}
+
+.card, .btn, input {
+    border-radius: 0 !important;
+}
