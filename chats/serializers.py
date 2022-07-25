@@ -31,10 +31,20 @@ class GetChatSerializer(serializers.ModelSerializer):
 
 
 class ChatMessagesSerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField(method_name='get_message_type')
 
     class Meta:
         model = Message
-        fields = ['id', 'created_at', 'message']
+        fields = ['id', 'created_at', 'message', 'type']
+
+    def get_message_type(self, obj):
+        user = None
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+        if user == obj.sender:
+            return 'primary'
+        return 'success'
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -49,10 +59,13 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class RetrieveChatSerializer(serializers.ModelSerializer):
     receiver_name = serializers.ReadOnlyField()
-    chat_messages = ChatMessagesSerializer(many=True, read_only=True)
+    chat_messages = serializers.SerializerMethodField(method_name='get_messages')
 
     class Meta:
         model = Chat
         fields = ['id', 'created_at', 'receiver_name', 'chat_messages']
 
-
+    def get_messages(self, obj):
+        messages = Message.objects.filter(chat=obj)
+        serializer = ChatMessagesSerializer(messages, many=True, context=self.context)
+        return serializer.data

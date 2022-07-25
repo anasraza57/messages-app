@@ -42,7 +42,7 @@ class ChatViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = RetrieveChatSerializer(instance)
+        serializer = RetrieveChatSerializer(instance, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
