@@ -163,7 +163,7 @@ export default {
       this.v$.form.$touch();
       if (this.v$.form.$error) return;
       axios
-        .post("/auth/register/", this.form)
+        .post("/auth/register", this.form)
         .then((response) => {
           this.$router.push("/log-in");
           this.$toast.success("User Created Successfully", {

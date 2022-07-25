@@ -296,13 +296,9 @@ header h4 {
     position: relative
 }
 
-/* 
-.autocomplete {
-    width: 100%;
-    position: absolute;
-    top: 80px;
-    left: 0;
-} */
+.send-btn {
+    height: 50px;
+}
 
 
 .simple-typeahead[data-v-0ccb6f26] {
@@ -315,40 +311,3 @@ header h4 {
     color: red !important;
     background-color: rebeccapurple !important;
 }
-
-/* .simple-typeahead .simple-typeahead-list[data-v-0ccb6f26] {
-    position: absolute;
-    width: 100%;
-    border: none;
-    max-height: 400px;
-    overflow-y: auto;
-    border-bottom: 0.1rem solid #d1d1d1;
-    z-index: 9;
-}
-.simple-typeahead .simple-typeahead-list .simple-typeahead-list-header[data-v-0ccb6f26] {
-    background-color: #fafafa;
-    padding: 0.6rem 1rem;
-    border-bottom: 0.1rem solid #d1d1d1;
-    border-left: 0.1rem solid #d1d1d1;
-    border-right: 0.1rem solid #d1d1d1;
-}
-.simple-typeahead .simple-typeahead-list .simple-typeahead-list-footer[data-v-0ccb6f26] {
-    background-color: #fafafa;
-    padding: 0.6rem 1rem;
-    border-left: 0.1rem solid #d1d1d1;
-    border-right: 0.1rem solid #d1d1d1;
-}
-.simple-typeahead .simple-typeahead-list .simple-typeahead-list-item[data-v-0ccb6f26] {
-    cursor: pointer;
-    background-color: #fafafa;
-    padding: 0.6rem 1rem;
-    border-bottom: 0.1rem solid #d1d1d1;
-    border-left: 0.1rem solid #d1d1d1;
-    border-right: 0.1rem solid #d1d1d1;
-}
-.simple-typeahead .simple-typeahead-list .simple-typeahead-list-item[data-v-0ccb6f26]:last-child {
-    border-bottom: none;
-}
-.simple-typeahead .simple-typeahead-list .simple-typeahead-list-item.simple-typeahead-list-item-active[data-v-0ccb6f26] {
-    background-color: pink;
-} */

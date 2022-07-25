@@ -51,7 +51,7 @@ export default {
     signout(e) {
       e.preventDefault();
       axios
-        .get("/auth/logout/")
+        .get("/auth/logout")
         .then((response) => {
           console.log("response", response);
           this.$store.commit("removeToken");

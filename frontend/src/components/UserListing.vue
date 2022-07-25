@@ -1,18 +1,18 @@
 <template>
   <div class="usersList">
     <a
-      v-for="user in users"
+      v-for="chat in chats"
       data-activity="1"
       data-last="1"
       data-uid="1"
       data-username="username"
-      @click="() => openChat(user.id)"
-      :class="['profileContainer', activeUser.id == user.id && 'active']"
-      :key="user.id"
+      @click="() => openChat(chat.id)"
+      :class="['profileContainer', chatId == chat.id && 'active']"
+      :key="chat.id"
     >
       <div class="profileHolder">
         <div class="profileName">
-          {{ user.username }}
+          {{ chat.receiver_name }}
         </div>
       </div>
       <div class="profileOptions">
@@ -29,7 +29,7 @@
               <img src="../assets/dots-menu.png" alt="" class="img-fluid" />
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">Delete</a>
+              <a class="dropdown-item" @click="()=>deleteChat(chat.id)" href="#">Delete</a>
             </div>
           </div>
         </div>
@@ -39,42 +39,45 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
+import { toast } from "../mixin/Toast.js";
+
 export default {
   name: "UserListing",
-   props: ['activeUser', 'users'],
+  props: ["chatId", "chats"],
   data() {
-    return {
-      // activeUser: {
-      //   id: null,
-      //   full_name: "",
-      // },
-    }
-  },
-  mounted() {
-    console.log('wasem', this.users)
+    return {};
   },
   methods: {
     openChat(id) {
-      // axios
-      //   .get(`/api/chat/${id}/`)
-      //   .then((response) => {
-      //     this.messages = response.chat_messages;
-      //     this.activeUser.full_name = response.receiver_name;
-          this.$emit('updateActiveUser', id);
-          // console.log(this.$refs.userlisting)
-        
-        // })
-        // .catch((error) => {
-        //   this.$toast.success(error.message, {
-        //     position: "top-right",
-        //     max: 3,
-        //   });
-        // });
+      axios
+        .get(`/api/chat/${id}/`)
+        .then((response) => {
+          this.$emit("updateUserMessages", {
+            messages: response.data.chat_messages,
+            chatId: id,
+            user: {
+              full_name: response.data.receiver_name,
+              id: response.data.receiver,
+            },
+          });
+        })
+        .catch((error) => {
+          toast.ErrorToast(error.message);
+        });
     },
-  }
+    deleteChat(id) {
+      axios
+        .delete(`/api/chat/${id}/`)
+        .then((response) => {
+          this.$emit("onLoadCall");
+        })
+        .catch((error) => {
+          toast.ErrorToast(error.message);
+        });
+    },
+  },
 };
 </script>
-
 
 <style scoped src="@/assets/css/messengerApp.css"></style>

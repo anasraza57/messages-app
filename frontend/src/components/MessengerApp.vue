@@ -5,24 +5,29 @@
         class="autcomplete simple-typeahead"
         id="typeahead_id"
         placeholder="Start writing..."
-        :items="usersList"
+        :items="searchUsers.map((user) => user.full_name)"
         :minInputLength="1"
         @selectItem="onSelect"
-        @onInput="onInputEventHandler"
       />
     </div>
     <div class="header">
-      <header>
-        <h4>
+      <header class="d-flex justify-content-between px-3">
+        <h4 class="text-capitalize">
           {{ activeUser.id ? activeUser.full_name : "Inbox" }}
         </h4>
+        <button class="btn btn-success" @click="openChat">Update</button>
       </header>
     </div>
-    <UserListing @updateActiveUser="updateActiveUser($event)" :activeUser="activeUser" :users="users"  />
+    <UserListing
+      @updateUserMessages="updateUserMessages($event)"
+      :chatId="chatId"
+      :chats="chatUsers"
+      @onLoadCall="onLoadCall()"
+      ref="UserListing"
+    />
     <div class="conversation">
       <div class="conversationContainer">
-        <span v-if="!activeUser.id" class="welcome"
-          >Welcome To Chat Inbox!!</span
+        <span v-if="!activeUser.id" class="welcome">Welcome To Chat Inbox!!</span
         >
         <span v-else-if="this.messages.length <= 0" class="welcome"
           >No conversation Yet!!</span
@@ -39,7 +44,6 @@
               `text-bg-${message.type == 'success' ? message.type : 'primary'}`,
               message.type == 'success' ? 'firstPerson' : 'secondPerson',
             ]"
-            clas
           >
             {{ message.message }}
             <span class="messageTime">{{ message.time }}</span></span
@@ -56,8 +60,20 @@
           ></textarea>
         </div>
         <div class="sendButtonContainer">
-          <button type="submit" id="sendButton" :disabled="btnDisable">
-            <!-- <img src="../assets/paper-plane.png" class="img-fluid" alt=""> -->
+          <button
+            type="submit"
+            id="sendButton"
+            :disabled="
+              message == '' ? true : activeUser.id == null ? true : false
+            "
+          >
+          <span class="w-50 h-50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="send-btn" viewBox="0 0 512 512">
+              <path
+                d="M511.6 36.86l-64 415.1c-1.5 9.734-7.375 18.22-15.97 23.05c-4.844 2.719-10.27 4.097-15.68 4.097c-4.188 0-8.319-.8154-12.29-2.472l-122.6-51.1l-50.86 76.29C226.3 508.5 219.8 512 212.8 512C201.3 512 192 502.7 192 491.2v-96.18c0-7.115 2.372-14.03 6.742-19.64L416 96l-293.7 264.3L19.69 317.5C8.438 312.8 .8125 302.2 .0625 289.1s5.469-23.72 16.06-29.77l448-255.1c10.69-6.109 23.88-5.547 34 1.406S513.5 24.72 511.6 36.86z"
+              />
+            </svg>
+          </span>
           </button>
         </div>
       </form>
@@ -67,58 +83,61 @@
 
 <script>
 import axios from "axios";
-import UserListing from './UserListing.vue';
+import { toast } from "../mixin/Toast.js";
+import UserListing from "./UserListing.vue";
 export default {
   name: "MessengerApp",
+  mixins: [toast],
   components: {
-    UserListing
-},
+    UserListing,
+  },
   data() {
     return {
       message: "",
-      btnDisable: true,
+      messages: [],
+      chatId: "",
       activeUser: {
         id: null,
         full_name: "",
       },
-      usersList: [],
-      users: [],
-      messages: [],
+      searchUsers: [],
+      chatUsers: [],
     };
   },
   created() {
-    axios
-      .get("/api/chat/")
-      .then((response) => {
-        const usersResponse = response.data.results;
-        this.users = usersResponse;
-        if (usersResponse.length >= 1) {
-          this.usersList = usersResponse.map((user) => user.username);
-        }
-      })
-      .catch((error) => {
-        this.$toast.success(error.message, {
-          position: "top-right",
-          max: 3,
-        });
-      });
+    this.onLoadCall();
   },
   mounted() {
     if (!this.$store.getters["isAuthenticated"]) this.$router.push("/log-in");
   },
-
-  updated() {
-    if (this.message == "" && this.activeUser.id) {
-      this.btnDisable = true;
-    } else {
-      this.btnDisable = false;
-    }
-  },
+  computed: {},
   methods: {
+    onLoadCall() {
+      axios
+        .get("/api/chat/")
+        .then((response) => {
+          if (response.data && response.data.length > 0) {
+            this.chatUsers = response.data;
+          }
+        })
+        .catch((error) => {
+          toast.ErrorToast(error.message);
+        });
+      axios
+        .get("/auth/users")
+        .then((response) => {
+          if (response.data && response.data.length > 0) {
+            this.searchUsers = response.data;
+          }
+        })
+        .catch((error) => {
+          toast.ErrorToast(error.message);
+        });
+    },
     onSelect(item) {
       let userId = "";
-      this.users.map((user) => {
-        if (item == user.username) {
+      this.searchUsers.map((user) => {
+        if (item == user.full_name) {
           userId = user.id;
           return;
         }
@@ -126,35 +145,40 @@ export default {
       axios
         .post(`/api/chat/`, { receiver: userId })
         .then((response) => {
-          console.log("waseem", response);
+          if (response.status == 201) {
+            toast.SuccessToast("Chat Created Successfully");
+            this.onLoadCall();
+          } else {
+            toast.SuccessToast("Chat Already Exist");
+          }
         })
         .catch((error) => {
-          this.$toast.success(error.message, {
-            position: "top-right",
-            max: 3,
-          });
+          toast.ErrorToast(error.message);
         });
     },
     onSend() {
       if (this.message == "") return;
       axios
-        .post(`/api/chat/`, { receiver: id, message: message, chat: "" })
+        .post(`/api/messages/`, {
+          receiver: this.activeUser.id,
+          message: this.message,
+          chat: this.chatId,
+        })
         .then((response) => {
           this.message = "";
-          console.log("waseem", response);
-          // this.users = json.parse(response.data.users);
         })
         .catch((error) => {
-          this.$toast.success(error.message, {
-            position: "top-right",
-            max: 3,
-          });
+          toast.ErrorToast(error.message);
         });
     },
-    onInputEventHandler() {},
-  updateActiveUser(id) {
-    console.log(id)
-  }
+    updateUserMessages(data) {
+      this.messages = data.messages;
+      this.chatId = data.chatId;
+      this.activeUser = data.user;
+    },
+    openChat() {
+      this.$refs.UserListing.openChat(this.chatId);
+    },
   },
 };
 </script>
