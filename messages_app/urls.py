@@ -22,8 +22,6 @@ schema_view = get_swagger_view(title='Messages App')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include('djoser.urls')),
-    path('api/v1/', include('djoser.urls.authtoken')),
     path('swagger/', schema_view),
     path('api/', include('chats.urls')),
     path('auth/', include('users.urls')),

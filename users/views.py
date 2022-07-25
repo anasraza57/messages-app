@@ -1,9 +1,10 @@
-from django.http import JsonResponse
-from rest_framework import generics, permissions, status
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponse
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, UserSerializer
 from .models import User
 
 
@@ -15,7 +16,7 @@ class RegisterAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-        user = serializer.save()
+        serializer.save()
         return Response({"message": "User Created Successfully"}, status=status.HTTP_201_CREATED)
 
 
@@ -27,6 +28,12 @@ class Logout(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-def get_users(request):
-    users = list(User.objects.filter(is_active=True).values('id', 'first_name', 'last_name'))
-    return JsonResponse(users, safe=False, status=status.HTTP_200_OK)
+class UserViewSet(APIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get(self, request):
+        queryset = self.queryset.exclude(id=request.user.id).filter(is_active=True)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

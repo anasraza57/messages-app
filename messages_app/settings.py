@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     # Installed Packages
     'rest_framework',
     'rest_framework.authtoken',
-    'djoser',
     'rest_framework_swagger',
     'django_rest_passwordreset',
     'corsheaders',

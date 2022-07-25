@@ -4,5 +4,4 @@ django-rest-swagger==2.1.2
 python-decouple
 psycopg2
 django-rest-passwordreset
-djoser
 django-cors-headers
