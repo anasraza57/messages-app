@@ -24,4 +24,5 @@ urlpatterns = [
     path('api/v1/', include('djoser.urls')),
     path('api/v1/', include('djoser.urls.authtoken')),
     path('swagger/', schema_view),
+    path('api/', include('chats.urls')),
 ]

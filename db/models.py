@@ -4,11 +4,11 @@ from django.db import models
 class BaseModel(models.Model):
     """Base model to be used to inject common fields.
     """
-    created_on = models.DateTimeField(
+    created_at = models.DateTimeField(
         auto_now_add=True
     )
 
-    modified = models.DateTimeField(
+    modified_at = models.DateTimeField(
         auto_now=True
     )
 
