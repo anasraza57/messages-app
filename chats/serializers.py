@@ -54,7 +54,7 @@ class RetrieveChatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chat
-        fields = ['id', 'created_at', 'receiver_name', 'chat_messages']
+        fields = ['id', 'created_at', 'receiver', 'receiver_name', 'chat_messages']
 
     def get_messages(self, obj):
         messages = Message.objects.filter(chat=obj)
