@@ -1,10 +1,17 @@
 from django.db.models import Q
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 from chats.models import Chat, Message
 from chats.serializers import (ChatSerializer, MessageSerializer, GetChatSerializer, ChatMessagesSerializer,
                                RetrieveChatSerializer)
+
+
+def get_users(request):
+    users = User.objects.filter(is_active=True).values('id', 'first_name', 'last_name')
+    return HttpResponse(users, status=status.HTTP_200_OK)
 
 
 class ChatViewSet(viewsets.ModelViewSet):
