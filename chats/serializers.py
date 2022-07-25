@@ -1,4 +1,3 @@
-from django.db.models import Q
 from rest_framework import serializers
 
 from chats.models import Chat, Message
@@ -11,14 +10,6 @@ class ChatSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        owner = validated_data.get('owner')
-        receiver = validated_data.get('receiver')
-        existing_chat = Chat.objects.filter(
-                Q(owner=owner, receiver=receiver) |
-                Q(owner=receiver, receiver=owner)
-        ).first()
-        if existing_chat:
-            return existing_chat
         return Chat.objects.create(**validated_data)
 
 

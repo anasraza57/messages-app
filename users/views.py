@@ -1,6 +1,4 @@
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponse
-from rest_framework import generics, permissions, status, viewsets
+from rest_framework import generics, permissions, status
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -25,7 +23,7 @@ class Logout(APIView):
 
     def get(self, request):
         request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response({"message": "User Logged Out Successfully"}, status=status.HTTP_200_OK)
 
 
 class UserViewSet(APIView):

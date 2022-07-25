@@ -15,6 +15,16 @@ class ChatViewSet(viewsets.ModelViewSet):
         data = request.data
         owner = request.user.id
         data['owner'] = owner
+
+        receiver = data.get('receiver')
+        existing_chat = Chat.objects.filter(
+            Q(owner=owner, receiver=receiver) |
+            Q(owner=receiver, receiver=owner)
+        ).first()
+        if existing_chat:
+            serializer = self.serializer_class(existing_chat)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
