@@ -1,14 +1,20 @@
 .loginContainer {
     background: #e91e63;
-    height: calc(100vh - 55px);
     display: flex;
     flex-direction: column;
     flex: 1;
     justify-content: center;
+    min-height: 768px;
+    height: 96vh;
 }
 
 .main-bg {
     background: #e91e63 !important;
+}
+
+.signup-box {
+    width: 500px;
+    max-width: 500px;
 }
 
 input:focus, button:focus {

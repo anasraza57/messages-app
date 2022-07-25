@@ -2,6 +2,8 @@
 
 - If you are in root directory run `cd frontend/`.
 
+- Required `node 16.15.1`
+
 ## Project setup
 ```
 npm install

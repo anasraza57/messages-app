@@ -13,17 +13,15 @@ body {
 .wrapper {
     display: grid;
     grid-gap: 3px;
-    grid-template-columns: minmax(200px, 300px) minmax(500px, auto) minmax(
-      200px,
-      300px
-    );
+    grid-template-columns: minmax(200px, 300px) minmax(500px, auto) minmax(200px,
+            300px);
     grid-template-rows: 60px auto;
     background-color: #111;
     width: 100vw;
     height: calc(100vh - 55px);
 }
 
-.wrapper > div {
+.wrapper>div {
     color: #fff;
     font-size: 2rem;
     display: flex;
@@ -33,7 +31,8 @@ body {
 }
 
 .search {
-    background-color: #111;
+    background-color: rgba(99, 45, 63, 0.3);
+    position: relative;
     grid-column: 1 / 2;
     overflow: hidden;
 }
@@ -44,15 +43,15 @@ body {
     padding: 6px 8px;
     font-size: 1.2rem;
     font-family: inherit;
-    background-color: #111;
+    background-color: rgba(99, 45, 63, 0.3);
     color: #fff;
     width: 75%;
     margin-left: 10px;
 }
 
 .header {
-    background-color: #34213f;
-    grid-column: 2 / 3;
+    background-color: #e91e63;
+    grid-column: 2 / 4;
     display: flex;
     align-items: stretch;
     overflow: hidden;
@@ -78,9 +77,15 @@ body {
     color: #fff;
 }
 
+.profileContainer:hover {
+    background-color: #e91e63;
+    transform: all .2s;
+    cursor: pointer;
+}
+
 .profileContainer:focus,
 .profileContainer.active {
-    background-color: #34213f;
+    background-color: rgba(233, 30, 99, 0.7);
     outline: none;
 }
 
@@ -91,13 +96,14 @@ body {
 .profileHolder {
     flex: 1;
     overflow: hidden;
+    display: flex;
+    align-items: center;
 }
 
 .profileName {
     font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
-    padding: 10px 0 0;
 }
 
 .profileLastMsg {
@@ -145,18 +151,12 @@ body {
 
 .conversation {
     background-color: #111;
-    grid-column: 2 / 3;
+    grid-column: 2 / 4;
     grid-row: 2 / 4;
     flex-direction: column;
     overflow: hidden;
 }
 
-.usersProfile {
-    background-color: #111;
-    grid-column: 3 / 4;
-    grid-row: 1 / 4;
-    overflow-y: auto;
-}
 
 .header .nav-left {
     list-style: none;
@@ -167,40 +167,9 @@ header {
     flex: 1;
 }
 
-.header .nav-right {
-    list-style: none;
-    flex: 0 0 70px;
-    padding-top: 10px;
-}
-
-.nav-left button {
-    background-color: transparent;
-    border: none;
-    color: #fff;
-    font-size: inherit;
-    cursor: pointer;
-}
-
-.header .nav-right a {
-    text-decoration: none;
-    width: 100%;
-    height: 100%;
-    padding: 4px;
-}
-
-.header .nav-right img {
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-}
-
-header h1 a {
-    /*background: url(../images/cr_logo_top.png) no-repeat center center;*/
-    background-size: 50px 50px;
-    display: block;
-    height: 100%;
-    width: 100%;
-    text-indent: -9999px;
+header h4 {
+    text-align: left;
+    margin-left: 10px;
 }
 
 .conversation .conversationContainer {
@@ -236,12 +205,8 @@ header h1 a {
     margin-left: 10px;
 }
 
-.conversation .conversationContainer.welcome {
-    align-items: flex-start;
-    justify-content: flex-end;
-}
 
-.conversation .conversationContainer:not(.welcome) > :first-child {
+.conversation .conversationContainer:not(.welcome)> :first-child {
     margin-top: auto !important;
 }
 
@@ -263,7 +228,7 @@ header h1 a {
 .sendContentContainer textarea {
     width: 100%;
     height: 100%;
-    background-color: rgba(52, 33, 63, 0.3);
+    background-color: rgba(99, 45, 63, 0.3);
     border: none;
     font-size: 1.4rem;
     font-family: inherit;
@@ -282,12 +247,108 @@ header h1 a {
 .sendButtonContainer button {
     width: 100%;
     height: 100%;
-    background-color: #7a1c5a;
+    background-color: #e91e63;
     border: none;
     color: #fff;
     cursor: pointer;
 }
 
 .sendButtonContainer button:hover {
-    background-color: #c870aa;
+    background-color: #c55077;
 }
+
+.sendButtonContainer button:disabled {
+    background-color: #c55077;
+}
+.dropdown-toggle {
+    background: transparent;
+    border: none;
+    width: 12px;
+    height: 24px;
+    padding: 0;
+}
+
+.dropdown-toggle:hover {
+    background: transparent;
+    border: none;
+}
+.dropdown-toggle:focus {
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+.dropdown-toggle::after {
+    display: block;
+    margin-left: 0.255em;
+    content: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+}
+
+.dropdown-toggle img {
+    filter: invert(1);
+}
+
+.autocompleteWrapper {
+    position: relative
+}
+
+/* 
+.autocomplete {
+    width: 100%;
+    position: absolute;
+    top: 80px;
+    left: 0;
+} */
+
+
+.simple-typeahead[data-v-0ccb6f26] {
+    position: relative;
+    width: 100%;
+}
+
+.simple-typeahead>input[data-v-0ccb6f26] {
+    margin-bottom: 20px;
+    color: red !important;
+    background-color: rebeccapurple !important;
+}
+
+/* .simple-typeahead .simple-typeahead-list[data-v-0ccb6f26] {
+    position: absolute;
+    width: 100%;
+    border: none;
+    max-height: 400px;
+    overflow-y: auto;
+    border-bottom: 0.1rem solid #d1d1d1;
+    z-index: 9;
+}
+.simple-typeahead .simple-typeahead-list .simple-typeahead-list-header[data-v-0ccb6f26] {
+    background-color: #fafafa;
+    padding: 0.6rem 1rem;
+    border-bottom: 0.1rem solid #d1d1d1;
+    border-left: 0.1rem solid #d1d1d1;
+    border-right: 0.1rem solid #d1d1d1;
+}
+.simple-typeahead .simple-typeahead-list .simple-typeahead-list-footer[data-v-0ccb6f26] {
+    background-color: #fafafa;
+    padding: 0.6rem 1rem;
+    border-left: 0.1rem solid #d1d1d1;
+    border-right: 0.1rem solid #d1d1d1;
+}
+.simple-typeahead .simple-typeahead-list .simple-typeahead-list-item[data-v-0ccb6f26] {
+    cursor: pointer;
+    background-color: #fafafa;
+    padding: 0.6rem 1rem;
+    border-bottom: 0.1rem solid #d1d1d1;
+    border-left: 0.1rem solid #d1d1d1;
+    border-right: 0.1rem solid #d1d1d1;
+}
+.simple-typeahead .simple-typeahead-list .simple-typeahead-list-item[data-v-0ccb6f26]:last-child {
+    border-bottom: none;
+}
+.simple-typeahead .simple-typeahead-list .simple-typeahead-list-item.simple-typeahead-list-item-active[data-v-0ccb6f26] {
+    background-color: pink;
+} */

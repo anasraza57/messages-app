@@ -7,26 +7,42 @@
             <h2 class="p-3">Login</h2>
           </div>
           <div class="card-body">
-            <form @submit.prevent="submitForm">
+            <form @submit.prevent="onSubmit">
               <div class="mb-4">
-                <label for="username" class="form-label">Username</label>
+                <label for="username" class="form-label">User Name</label>
                 <input
                   class="form-control"
                   type="text"
-                  name="username"
+                  name="form.username"
                   placeholder="Username"
-                  v-model="username"
+                  v-model.trim="form.username"
                 />
+                <small
+                  class="error"
+                  v-for="(error, index) of v$.form.username.$errors"
+                  :key="index"
+                >
+                  {{ capitalizeFirstLetter(error.$property) }}
+                  {{ error.$message }}
+                </small>
               </div>
               <div class="mb-4">
                 <label for="password" class="form-label">Password</label>
                 <input
                   class="form-control"
                   type="password"
-                  name="password"
+                  name="form.password"
                   placeholder="Password"
-                  v-model="password"
+                  v-model.trim="form.password"
                 />
+                <small
+                  class="error"
+                  v-for="(error, index) of v$.form.password.$errors"
+                  :key="index"
+                >
+                  {{ capitalizeFirstLetter(error.$property) }}
+                  {{ error.$message }}
+                </small>
               </div>
               <div class="d-grid">
                 <button type="submit" class="btn text-light main-bg">
@@ -49,39 +65,67 @@
 
 <script>
 import axios from "axios";
+import useVuelidate from "@vuelidate/core";
+import { required, minLength } from "@vuelidate/validators";
 
 export default {
   name: "LogInPage",
-  data() {
-    return {
-      username: "",
+
+  data: () => ({
+    form: {
       password: "",
+      username: ""
+    },
+  }),
+
+  setup: () => ({ v$: useVuelidate() }),
+
+  validations() {
+    return {
+      form: {
+        username: { required },
+        password: { required, min: minLength(8) },
+      },
     };
   },
+
   mounted() {
     if (this.$store.getters["isAuthenticated"]) this.$router.push("/");
   },
-  methods: {
-    submitForm(e) {
-      e.preventDefault();
-      const formData = {
-        username: this.username,
-        password: this.password,
-      };
 
+  methods: {
+    onSubmit() {
+      this.v$.form.$touch();
+      if (this.v$.form.$error) return;
       axios
-        .post("/api/v1/token/login", formData) // for logout >>>>> /api/v1/token/logout/
+        .post("/auth/login/", this.form)
         .then((response) => {
-          console.log("response", response);
           const token = response.data.auth_token;
           this.$store.commit("setToken", token);
-          axios.defaults.headers.common["Authorization"] = "Token" + token;
+          axios.defaults.headers.common["Authorization"] = "Token " + token;
           localStorage.setItem("token", token);
           this.$router.push("/");
+          this.$toast.success("Logged In Successfully", {
+            position: "top-right",
+            max: 3,
+          });
         })
         .catch((error) => {
-          console.log(error);
+          this.$toast.success(error.message, {
+            position: "top-right",
+            max: 3,
+          });
         });
+    },
+
+    capitalizeFirstLetter(words) {
+      var separateWord = words.toLowerCase().split("_");
+      for (var i = 0; i < separateWord.length; i++) {
+        separateWord[i] =
+          separateWord[i].charAt(0).toUpperCase() +
+          separateWord[i].substring(1);
+      }
+      return separateWord.join(" ");
     },
   },
 };
