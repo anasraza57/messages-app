@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     # Custom Apps
+    'users',
     'chats',
 ]
 
@@ -87,7 +88,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'messages_app.wsgi.application'
 
 # User Management Configurations
-# AUTH_USER_MODEL = 'profiles.User'
+AUTH_USER_MODEL = 'users.User'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

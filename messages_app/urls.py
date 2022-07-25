@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_swagger.views import get_swagger_view
 
-from chats.views import get_users
 
 schema_view = get_swagger_view(title='Messages App')
 
@@ -27,5 +26,5 @@ urlpatterns = [
     path('api/v1/', include('djoser.urls.authtoken')),
     path('swagger/', schema_view),
     path('api/', include('chats.urls')),
-    path('api/users', get_users)
+    path('auth/', include('users.urls')),
 ]
